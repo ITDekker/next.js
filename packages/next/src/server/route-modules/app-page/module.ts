@@ -41,7 +41,7 @@ type AppPageUserlandModule = {
   loaderTree: LoaderTree
 }
 
-interface AppPageRouteHandlerContext extends RouteModuleHandleContext {
+export interface AppPageRouteHandlerContext extends RouteModuleHandleContext {
   page: string
   query: NextParsedUrlQuery
   fallbackRouteParams: FallbackRouteParams | null

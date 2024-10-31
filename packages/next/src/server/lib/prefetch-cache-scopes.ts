@@ -1,10 +1,10 @@
-import type { CacheScopeStore } from '../async-storage/cache-scope.external'
+import type { ResumeDataCache } from '../use-cache/resume-data-cache'
 
 export class PrefetchCacheScopes {
   private cacheScopes = new Map<
     string,
     {
-      cache: CacheScopeStore['cache']
+      cache: ResumeDataCache
       // we track timestamp as we evict after 30s
       // if a prefetch cache scope isn't used by then
       timestamp: number
@@ -33,7 +33,7 @@ export class PrefetchCacheScopes {
     return undefined
   }
 
-  set(url: string, cache: CacheScopeStore['cache']) {
+  set(url: string, cache: ResumeDataCache) {
     setImmediate(() => this.evict())
     return this.cacheScopes.set(url, {
       cache,

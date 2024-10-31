@@ -16,6 +16,7 @@ import {
   RSC_SUFFIX,
   RSC_SEGMENTS_DIR_SUFFIX,
   RSC_SEGMENT_SUFFIX,
+  NEXT_STATIC_DATA_CACHE_SUFFIX,
 } from '../../lib/constants'
 import { hasNextSupport } from '../../server/ci-info'
 import { lazyRenderAppPage } from '../../server/route-modules/app-page/module.render'
@@ -35,6 +36,7 @@ export const enum ExportedAppPageFiles {
   PREFETCH_FLIGHT_SEGMENT = 'PREFETCH_FLIGHT_SEGMENT',
   META = 'META',
   POSTPONED = 'POSTPONED',
+  RESUME_CACHE = 'RESUME_CACHE',
 }
 
 export async function prospectiveRenderAppPage(
@@ -145,6 +147,7 @@ export async function exportAppPage(
         fetchTags,
         flightData,
         segmentFlightData,
+        resumeDataCache,
       } = metadata
 
       // Ensure we don't postpone without having PPR enabled.
@@ -179,6 +182,14 @@ export async function exportAppPage(
         (!fallbackRouteParams || fallbackRouteParams.size === 0)
       ) {
         throw new Error(`Invariant: failed to get page data for ${path}`)
+      }
+
+      if (resumeDataCache) {
+        await fileWriter(
+          ExportedAppPageFiles.RESUME_CACHE,
+          htmlFilepath.replace(/\.html$/, NEXT_STATIC_DATA_CACHE_SUFFIX),
+          await resumeDataCache.stringify()
+        )
       }
 
       let segmentPaths

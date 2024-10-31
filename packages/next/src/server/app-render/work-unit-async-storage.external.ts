@@ -9,6 +9,7 @@ import type { DynamicTrackingState } from './dynamic-rendering'
 // Share the instance module in the next-shared layer
 import { workUnitAsyncStorage } from './work-unit-async-storage-instance' with { 'turbopack-transition': 'next-shared' }
 import type { ServerComponentsHmrCache } from '../response-cache'
+import type { ResumeDataCache } from '../use-cache/resume-data-cache'
 
 type WorkUnitPhase = 'action' | 'render' | 'after'
 
@@ -52,6 +53,8 @@ export type RequestStore = {
   // DEV-only
   usedDynamic?: boolean
   prerenderPhase?: boolean
+
+  resumeDataCache: ResumeDataCache | null
 } & PhasePartial
 
 /**
@@ -102,6 +105,11 @@ export type PrerenderStoreModern = {
   // not part of the primary render path and are just prerendering to produce
   // validation results
   validating?: boolean
+
+  /**
+   * The resume data cache for this prerender.
+   */
+  resumeDataCache: ResumeDataCache | null
 } & PhasePartial
 
 export type PrerenderStorePPR = {
@@ -113,6 +121,11 @@ export type PrerenderStorePPR = {
   expire: number // server expiration time
   stale: number // client expiration time
   tags: null | string[]
+
+  /**
+   * The resume data cache for this prerender.
+   */
+  resumeDataCache: ResumeDataCache
 } & PhasePartial
 
 export type PrerenderStoreLegacy = {
@@ -123,6 +136,12 @@ export type PrerenderStoreLegacy = {
   expire: number // server expiration time
   stale: number // client expiration time
   tags: null | string[]
+
+  /**
+   * The resume data cache for this prerender. It's null because we don't resume
+   * legacy prerenders.
+   */
+  resumeDataCache: null
 } & PhasePartial
 
 export type PrerenderStore =
